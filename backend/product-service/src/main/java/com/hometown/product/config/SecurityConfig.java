@@ -29,6 +29,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/images/**").permitAll()
                 .requestMatchers("/api/products/**", "/api/categories/**", "/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
