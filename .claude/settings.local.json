@@ -5,7 +5,12 @@
       "Bash(echo \"EXIT:$?\")",
       "Bash(unzip -l hometown-api/target/hometown-api.jar)",
       "Bash(TEMP=\"E:/HomeTown/.run/tmp\" TMP=\"E:/HomeTown/.run/tmp\" npm run build)",
-      "Bash(echo \"FE_EXIT:$?\")"
+      "Bash(echo \"FE_EXIT:$?\")",
+      "Bash(New-Item -ItemType Directory -Force \"E:/HomeTown/backend/hometown-api/src/main/java/com/hometown/shots/domain\")",
+      "Bash(New-Item -ItemType Directory -Force \"E:/HomeTown/backend/hometown-api/src/main/java/com/hometown/shots/repo\")",
+      "Bash(New-Item -ItemType Directory -Force \"E:/HomeTown/backend/hometown-api/src/main/java/com/hometown/shots/dto\")",
+      "Bash(New-Item -ItemType Directory -Force \"E:/HomeTown/backend/hometown-api/src/main/java/com/hometown/shots/service\")",
+      "Bash(New-Item -ItemType Directory -Force \"E:/HomeTown/backend/hometown-api/src/main/java/com/hometown/shots/web\")"
     ]
   }
 }
