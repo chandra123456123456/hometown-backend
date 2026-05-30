@@ -50,17 +50,17 @@ public class DataSeeder implements CommandLineRunner {
         Long textiles = categories.save(category("Textiles", "textiles")).getId();
         Long decor = categories.save(category("Home Decor", "home-decor")).getId();
 
-        products.save(product("Terracotta Vase Set", "Set of 3 hand-thrown terracotta vases with natural glaze.", "899.00", 0, pottery, 15, "p2.jpg"));
+        products.save(product("Terracotta Vase Set", "Set of 3 hand-thrown terracotta vases with natural glaze.", "1299.00", 0, pottery, 15, "p2.jpg"));
         products.save(product("Handloom Cotton Throw", "Handwoven cotton throw blanket with block-print border.", "1299.00", 15, textiles, 20, "p3.jpg"));
-        products.save(product("Brass Diya Lamp", "Hand-cast brass oil lamp for festive home decor.", "649.00", 5, decor, 30, "p4.jpg"));
-        products.save(product("Warli Painted Wall Plate", "Decorative wall plate with hand-painted Warli tribal art.", "499.00", 0, wallArt, 25, "p5.jpg"));
-        products.save(product("Jute Macrame Wall Hanging", "Boho jute macrame wall hanging, handcrafted.", "799.00", 20, decor, 12, "p6.jpg"));
-        products.save(product("Hand-painted Pichwai Art", "Intricate Pichwai painting on cloth, traditional Rajasthani art.", "2199.00", 5, wallArt, 6, "p7.jpg"));
-        products.save(product("Blue Pottery Bowl", "Jaipur blue pottery decorative bowl, hand-glazed.", "749.00", 0, pottery, 18, "p8.jpg"));
-        products.save(product("Kantha Embroidered Cushion", "Hand-embroidered Kantha cushion cover, recycled cotton.", "599.00", 10, textiles, 22, "p9.jpg"));
+        products.save(product("Brass Diya Lamp", "Hand-cast brass oil lamp for festive home decor.", "1199.00", 5, decor, 30, "p4.jpg"));
+        products.save(product("Warli Painted Wall Plate", "Decorative wall plate with hand-painted Warli tribal art.", "1199.00", 0, wallArt, 25, "p5.jpg"));
+        products.save(product("Jute Macrame Wall Hanging", "Boho jute macrame wall hanging, handcrafted.", "1199.00", 20, decor, 12, "p6.jpg"));
+        products.save(paintingProduct("Hand-painted Pichwai Art", "Intricate Pichwai painting on cloth, traditional Rajasthani art.", "2199.00", 5, wallArt, 6, "p7.jpg", "CANVAS", 45, 60));
+        products.save(product("Blue Pottery Bowl", "Jaipur blue pottery decorative bowl, hand-glazed.", "1299.00", 0, pottery, 18, "p8.jpg"));
+        products.save(product("Kantha Embroidered Cushion", "Hand-embroidered Kantha cushion cover, recycled cotton.", "1099.00", 10, textiles, 22, "p9.jpg"));
         products.save(product("Brass Urli Bowl", "Traditional brass urli for floating flowers and diyas.", "1099.00", 0, decor, 14, "p10.jpg"));
         products.save(product("Dhokra Tribal Figurine", "Handcrafted Dhokra metal art figurine, lost-wax casting.", "1399.00", 0, decor, 9, "p11.jpg"));
-        products.save(product("Gond Painting on Paper", "Vibrant Gond tribal painting, hand-painted on handmade paper.", "999.00", 8, wallArt, 11, "p12.jpg"));
+        products.save(paintingProduct("Gond Painting on Paper", "Vibrant Gond tribal painting, hand-painted on handmade paper.", "1499.00", 8, wallArt, 11, "p12.jpg", "PAINTING", 30, 42));
     }
 
     private User user(String name, String email, String rawPassword, String role) {
@@ -89,7 +89,16 @@ public class DataSeeder implements CommandLineRunner {
         p.setStock(stock);
         p.setActive(true);
         p.setSellerId(1L);
-        p.setImageUrls(List.of("assets/products/" + image));
+        p.setImageUrls(List.of("/api/catalog/" + image));
+        return p;
+    }
+
+    private Product paintingProduct(String name, String desc, String price, int discount, Long categoryId,
+                                    int stock, String image, String artType, int artW, int artH) {
+        Product p = product(name, desc, price, discount, categoryId, stock, image);
+        p.setArtType(artType);
+        p.setArtWidthCm(artW);
+        p.setArtHeightCm(artH);
         return p;
     }
 

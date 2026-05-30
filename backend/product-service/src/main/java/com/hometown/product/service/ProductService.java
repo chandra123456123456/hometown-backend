@@ -2,6 +2,7 @@ package com.hometown.product.service;
 
 import com.hometown.common.web.ApiException;
 import com.hometown.product.domain.Product;
+import com.hometown.product.dto.FrameOption;
 import com.hometown.product.dto.ProductOrderInfo;
 import com.hometown.product.dto.ProductRequest;
 import com.hometown.product.dto.ProductResponse;
@@ -9,6 +10,7 @@ import com.hometown.product.image.ImageUrlSigner;
 import com.hometown.product.repo.ProductRepository;
 import com.hometown.product.repo.ProductReviewRepository;
 import com.hometown.product.repo.ProductSpecs;
+import com.hometown.product.util.FramePricing;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +47,8 @@ public class ProductService {
         int count = (int) reviewRepo.countByProductId(p.getId());
         return new ProductResponse(r.id(), r.name(), r.description(), r.price(),
                 r.discountPercent(), r.effectivePrice(), r.categoryId(), r.stock(),
-                r.active(), r.sellerId(), r.createdAt(), signed, rounded, count, r.antique());
+                r.active(), r.sellerId(), r.createdAt(), signed, rounded, count, r.antique(),
+                r.artType(), r.framable(), r.artWidthCm(), r.artHeightCm());
     }
 
     public Page<ProductResponse> search(Long categoryId, String q, BigDecimal minPrice,
@@ -106,6 +109,18 @@ public class ProductService {
                 p.getWeightGrams(), p.getLengthCm(), p.getWidthCm(), p.getHeightCm());
     }
 
+    public List<FrameOption> frameOptions(Long id) {
+        Product p = repo.findById(id)
+                .orElseThrow(() -> ApiException.notFound("Product not found: " + id));
+        return FramePricing.optionsFor(p);
+    }
+
+    public BigDecimal frameCharge(Long productId, String frameType) {
+        Product p = repo.findById(productId)
+                .orElseThrow(() -> ApiException.notFound("Product not found: " + productId));
+        return FramePricing.charge(frameType, p.getArtWidthCm(), p.getArtHeightCm());
+    }
+
     private Product applyRequest(Product p, ProductRequest req) {
         p.setName(req.name());
         p.setDescription(req.description());
@@ -122,6 +137,10 @@ public class ProductService {
         if (req.lengthCm() != null) p.setLengthCm(req.lengthCm());
         if (req.widthCm() != null) p.setWidthCm(req.widthCm());
         if (req.heightCm() != null) p.setHeightCm(req.heightCm());
+        String art = (req.artType() == null || req.artType().isBlank()) ? "NONE" : req.artType().toUpperCase();
+        p.setArtType(art);
+        if (req.artWidthCm() != null) p.setArtWidthCm(req.artWidthCm());
+        if (req.artHeightCm() != null) p.setArtHeightCm(req.artHeightCm());
         List<String> urls = new ArrayList<>();
         if (req.imageUrls() != null) {
             for (String u : req.imageUrls()) urls.add(signer.stripQuery(u));

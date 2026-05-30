@@ -39,6 +39,15 @@ public class Product {
     @Column(nullable = false, columnDefinition = "boolean not null default false")
     private boolean antique = false;
 
+    @Column(nullable = false, columnDefinition = "varchar(20) not null default 'NONE'")
+    private String artType = "NONE";
+
+    @Column(nullable = false, columnDefinition = "integer not null default 0")
+    private int artWidthCm = 0;
+
+    @Column(nullable = false, columnDefinition = "integer not null default 0")
+    private int artHeightCm = 0;
+
     @Column(nullable = false, columnDefinition = "integer not null default 500")
     private int weightGrams = 500;
 
@@ -93,6 +102,15 @@ public class Product {
 
     public boolean isAntique() { return antique; }
     public void setAntique(boolean antique) { this.antique = antique; }
+
+    public String getArtType() { return artType; }
+    public void setArtType(String artType) { this.artType = artType; }
+
+    public int getArtWidthCm() { return artWidthCm; }
+    public void setArtWidthCm(int artWidthCm) { this.artWidthCm = artWidthCm; }
+
+    public int getArtHeightCm() { return artHeightCm; }
+    public void setArtHeightCm(int artHeightCm) { this.artHeightCm = artHeightCm; }
 
     public int getWeightGrams() { return weightGrams; }
     public void setWeightGrams(int weightGrams) { this.weightGrams = weightGrams; }

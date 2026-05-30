@@ -19,4 +19,10 @@ public class FeignPricingAdapter implements PricingPort {
     public ProductDto fetchProduct(Long id) {
         return productClient.getProduct(id);
     }
+
+    @Override
+    public java.math.BigDecimal frameCharge(Long productId, String frameType) {
+        // Microservices mode unused in this deployment; frames resolved in bundled mode.
+        return java.math.BigDecimal.ZERO;
+    }
 }

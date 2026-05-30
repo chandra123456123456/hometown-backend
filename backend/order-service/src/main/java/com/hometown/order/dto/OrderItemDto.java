@@ -7,6 +7,8 @@ public record OrderItemDto(
         Long productId,
         int quantity,
         BigDecimal price,
-        Long sellerId
+        Long sellerId,
+        String frameType,
+        BigDecimal frameCharge
 ) {
 }

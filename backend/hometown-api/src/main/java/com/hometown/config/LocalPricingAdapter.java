@@ -23,4 +23,9 @@ public class LocalPricingAdapter implements PricingPort {
         return new ProductDto(p.id(), p.price(), p.sellerId(), p.stock(),
                 p.weightGrams(), p.lengthCm(), p.widthCm(), p.heightCm());
     }
+
+    @Override
+    public java.math.BigDecimal frameCharge(Long productId, String frameType) {
+        return productService.frameCharge(productId, frameType);
+    }
 }

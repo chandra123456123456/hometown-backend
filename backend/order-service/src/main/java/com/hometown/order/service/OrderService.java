@@ -95,16 +95,25 @@ public class OrderService {
             } catch (Exception ignored) {
                 // fall back to zero price
             }
+            BigDecimal frameCharge = BigDecimal.ZERO;
+            try {
+                BigDecimal fc = pricingPort.frameCharge(line.productId(), line.frameType());
+                if (fc != null) frameCharge = fc;
+            } catch (Exception ignored) {
+                // no frame charge on failure
+            }
             OrderItem item = new OrderItem();
             item.setProductId(line.productId());
             item.setQuantity(line.quantity());
             item.setPrice(price);
             item.setSellerId(sellerId);
+            item.setFrameType(line.frameType());
+            item.setFrameCharge(frameCharge);
             return item;
         }).toList();
 
         BigDecimal subtotal = items.stream()
-                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .map(i -> i.getPrice().add(i.getFrameCharge()).multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal shippingCost = BigDecimal.ZERO;
@@ -185,7 +194,7 @@ public class OrderService {
 
     private OrderResponse toResponse(Order order, List<OrderItem> items) {
         List<OrderItemDto> itemDtos = items.stream()
-                .map(i -> new OrderItemDto(i.getId(), i.getProductId(), i.getQuantity(), i.getPrice(), i.getSellerId()))
+                .map(i -> new OrderItemDto(i.getId(), i.getProductId(), i.getQuantity(), i.getPrice(), i.getSellerId(), i.getFrameType(), i.getFrameCharge()))
                 .toList();
         return new OrderResponse(
                 order.getId(),

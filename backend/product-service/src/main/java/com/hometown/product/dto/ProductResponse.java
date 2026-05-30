@@ -20,7 +20,11 @@ public record ProductResponse(
         List<String> imageUrls,
         Double avgRating,
         Integer reviewCount,
-        boolean antique
+        boolean antique,
+        String artType,
+        boolean framable,
+        Integer artWidthCm,
+        Integer artHeightCm
 ) {
     public static ProductResponse of(com.hometown.product.domain.Product p) {
         BigDecimal effective = p.getDiscountPercent() == 0
@@ -28,6 +32,8 @@ public record ProductResponse(
                 : p.getPrice()
                         .multiply(BigDecimal.valueOf(100 - p.getDiscountPercent()))
                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        String art = p.getArtType() == null ? "NONE" : p.getArtType();
+        boolean framable = "SKETCH".equals(art) || "PAINTING".equals(art) || "CANVAS".equals(art);
         return new ProductResponse(
                 p.getId(),
                 p.getName(),
@@ -43,7 +49,11 @@ public record ProductResponse(
                 p.getImageUrls(),
                 null,
                 0,
-                p.isAntique()
+                p.isAntique(),
+                art,
+                framable,
+                p.getArtWidthCm(),
+                p.getArtHeightCm()
         );
     }
 }

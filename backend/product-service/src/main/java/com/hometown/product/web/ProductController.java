@@ -1,5 +1,6 @@
 package com.hometown.product.web;
 
+import com.hometown.product.dto.FrameOption;
 import com.hometown.product.dto.ProductRequest;
 import com.hometown.product.dto.ProductResponse;
 import com.hometown.product.service.ProductService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -58,5 +60,10 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/frame-options")
+    public List<FrameOption> frameOptions(@PathVariable Long id) {
+        return service.frameOptions(id);
     }
 }

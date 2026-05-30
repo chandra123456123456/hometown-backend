@@ -19,5 +19,8 @@ public record ProductRequest(
         Integer weightGrams,
         Integer lengthCm,
         Integer widthCm,
-        Integer heightCm
+        Integer heightCm,
+        String artType,
+        Integer artWidthCm,
+        Integer artHeightCm
 ) {}

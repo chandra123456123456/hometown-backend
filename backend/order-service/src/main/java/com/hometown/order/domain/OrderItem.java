@@ -25,6 +25,11 @@ public class OrderItem {
 
     private Long sellerId;
 
+    private String frameType;
+
+    @Column(precision = 19, scale = 2)
+    private BigDecimal frameCharge = BigDecimal.ZERO;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -42,4 +47,10 @@ public class OrderItem {
 
     public Long getSellerId() { return sellerId; }
     public void setSellerId(Long sellerId) { this.sellerId = sellerId; }
+
+    public String getFrameType() { return frameType; }
+    public void setFrameType(String frameType) { this.frameType = frameType; }
+
+    public BigDecimal getFrameCharge() { return frameCharge; }
+    public void setFrameCharge(BigDecimal frameCharge) { this.frameCharge = frameCharge; }
 }
