@@ -3,7 +3,9 @@
     "allow": [
       "Bash(MAVEN_OPTS=\"-Djava.io.tmpdir=E:/HomeTown/.run/tmp\" TMP=\"E:/HomeTown/.run/tmp\" TEMP=\"E:/HomeTown/.run/tmp\" mvn -o -q -pl hometown-api -am -DskipTests clean package)",
       "Bash(echo \"EXIT:$?\")",
-      "Bash(unzip -l hometown-api/target/hometown-api.jar)"
+      "Bash(unzip -l hometown-api/target/hometown-api.jar)",
+      "Bash(TEMP=\"E:/HomeTown/.run/tmp\" TMP=\"E:/HomeTown/.run/tmp\" npm run build)",
+      "Bash(echo \"FE_EXIT:$?\")"
     ]
   }
 }

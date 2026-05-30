@@ -7,9 +7,12 @@ import com.hometown.product.dto.ProductResponse;
 import com.hometown.product.image.ImageUrlSigner;
 import com.hometown.product.repo.ProductRepository;
 import com.hometown.product.repo.ProductReviewRepository;
+import com.hometown.product.repo.ProductSpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,19 +47,27 @@ public class ProductService {
                 r.active(), r.sellerId(), r.createdAt(), signed, rounded, count);
     }
 
-    public Page<ProductResponse> search(Long categoryId, String q, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Product> results;
-        if (categoryId != null && q != null && !q.isBlank()) {
-            results = repo.findByCategoryIdAndNameContainingIgnoreCase(categoryId, q, pageable);
-        } else if (categoryId != null) {
-            results = repo.findByCategoryId(categoryId, pageable);
-        } else if (q != null && !q.isBlank()) {
-            results = repo.findByNameContainingIgnoreCase(q, pageable);
+    public Page<ProductResponse> search(Long categoryId, String q, BigDecimal minPrice,
+            BigDecimal maxPrice, Boolean inStock, String sort, int page, int size) {
+        Specification<Product> spec = Specification.where(ProductSpecs.categoryIs(categoryId))
+                .and(ProductSpecs.nameContains(q))
+                .and(ProductSpecs.priceGte(minPrice))
+                .and(ProductSpecs.priceLte(maxPrice))
+                .and(Boolean.TRUE.equals(inStock) ? ProductSpecs.inStock() : null);
+
+        Sort sortObj;
+        if ("price_asc".equals(sort)) {
+            sortObj = Sort.by("price").ascending();
+        } else if ("price_desc".equals(sort)) {
+            sortObj = Sort.by("price").descending();
+        } else if ("name".equals(sort)) {
+            sortObj = Sort.by("name").ascending();
         } else {
-            results = repo.findAll(pageable);
+            sortObj = Sort.by("id").descending();
         }
-        return results.map(this::toResponse);
+
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+        return repo.findAll(spec, pageable).map(this::toResponse);
     }
 
     public ProductResponse findById(Long id) {
