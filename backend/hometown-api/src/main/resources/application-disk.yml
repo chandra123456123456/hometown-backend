@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:E:/HomeTown/.run/db/hometown;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.hbm2ddl.create_namespaces: true
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
