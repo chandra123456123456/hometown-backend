@@ -11,6 +11,9 @@ hs_err_pid*
 # ===== Frontend lives in its own repo (hometown-frontend) =====
 /frontend/
 
+# ===== Local run artifacts (db files, logs, temp, jars) — never commit =====
+/.run/
+
 # ===== Angular / Node =====
 node_modules/
 dist/
