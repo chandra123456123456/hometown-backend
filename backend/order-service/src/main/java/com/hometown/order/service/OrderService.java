@@ -1,12 +1,12 @@
 package com.hometown.order.service;
 
 import com.hometown.common.web.ApiException;
-import com.hometown.order.client.ProductClient;
-import com.hometown.order.client.ShippingClient;
 import com.hometown.order.domain.Order;
 import com.hometown.order.domain.OrderItem;
 import com.hometown.order.domain.OrderStatus;
 import com.hometown.order.dto.*;
+import com.hometown.order.port.PricingPort;
+import com.hometown.order.port.ShippingPort;
 import com.hometown.order.repo.OrderItemRepository;
 import com.hometown.order.repo.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ProductClient productClient;
-    private final ShippingClient shippingClient;
+    private final PricingPort pricingPort;
+    private final ShippingPort shippingPort;
 
     public OrderService(OrderRepository orderRepository,
                         OrderItemRepository orderItemRepository,
-                        ProductClient productClient,
-                        ShippingClient shippingClient) {
+                        PricingPort pricingPort,
+                        ShippingPort shippingPort) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
-        this.productClient = productClient;
-        this.shippingClient = shippingClient;
+        this.pricingPort = pricingPort;
+        this.shippingPort = shippingPort;
     }
 
     @Transactional
@@ -39,7 +39,7 @@ public class OrderService {
             BigDecimal price = BigDecimal.ZERO;
             Long sellerId = null;
             try {
-                ProductDto product = productClient.getProduct(line.productId());
+                ProductDto product = pricingPort.fetchProduct(line.productId());
                 price = product.price();
                 sellerId = product.sellerId();
             } catch (Exception ignored) {
@@ -61,7 +61,7 @@ public class OrderService {
         String partner = req.shippingPartner();
         int etaDays = 5;
         try {
-            ShippingEstimateDto estimate = shippingClient.getEstimate(req.destPincode(), 1.0);
+            ShippingEstimateDto estimate = shippingPort.estimate(req.destPincode(), 1);
             shippingCost = estimate.charge();
             partner = estimate.partner();
             etaDays = estimate.etaDays();

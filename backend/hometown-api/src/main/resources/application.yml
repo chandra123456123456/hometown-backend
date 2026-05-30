@@ -6,6 +6,17 @@ spring:
     name: hometown-api
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hometown}
+    username: ${DB_USER:hometown}
+    password: ${DB_PASSWORD:hometown}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    # See RISKS: per-module V1__init.sql files collide on a single classpath:db/migration
+    # location when bundled. Disabled for the aggregator until per-schema Flyway is wired.
+    enabled: false
 
 management:
   endpoints:

@@ -1,3 +1,21 @@
+x-backend-build: &backend-build
+  build:
+    context: ./backend
+  image: hometown-backend:latest
+
+x-backend-env: &backend-env
+  DATABASE_URL: jdbc:postgresql://postgres:5432/hometown
+  DB_USER: hometown
+  DB_PASSWORD: hometown
+  EUREKA_URI: http://discovery-server:8761/eureka
+  JWT_SECRET: local-dev-secret-change-me-please-32bytes-minimum
+
+x-backend-depends: &backend-depends
+  postgres:
+    condition: service_healthy
+  discovery-server:
+    condition: service_started
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -15,6 +33,83 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  discovery-server:
+    <<: *backend-build
+    container_name: hometown-discovery
+    environment:
+      SERVICE: discovery-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    <<: *backend-build
+    container_name: hometown-gateway
+    environment:
+      <<: *backend-env
+      SERVICE: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on: *backend-depends
+
+  user-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: user-service
+    depends_on: *backend-depends
+
+  product-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: product-service
+    depends_on: *backend-depends
+
+  cart-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: cart-service
+    depends_on: *backend-depends
+
+  order-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: order-service
+    depends_on: *backend-depends
+
+  payment-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: payment-service
+    depends_on: *backend-depends
+
+  shipping-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: shipping-service
+    depends_on: *backend-depends
+
+  analytics-service:
+    <<: *backend-build
+    environment:
+      <<: *backend-env
+      SERVICE: analytics-service
+    depends_on: *backend-depends
+
+  frontend:
+    build:
+      context: ./frontend
+    image: hometown-frontend:latest
+    container_name: hometown-frontend
+    ports:
+      - "8088:80"
+    depends_on:
+      - api-gateway
 
   prometheus:
     image: prom/prometheus:latest

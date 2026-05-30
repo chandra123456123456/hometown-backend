@@ -8,12 +8,13 @@ dependency-reduced-pom.xml
 *.ear
 hs_err_pid*
 
+# ===== Frontend lives in its own repo (hometown-frontend) =====
+/frontend/
+
 # ===== Angular / Node =====
 node_modules/
-/frontend/dist/
-/frontend/.angular/
-/frontend/tmp/
-/frontend/out-tsc/
+dist/
+.angular/
 npm-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
