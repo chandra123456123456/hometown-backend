@@ -1,0 +1,32 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: cart-service
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hometown}
+    username: ${DB_USER:hometown}
+    password: ${DB_PASSWORD:hometown}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: carts
+  flyway:
+    default-schema: carts
+    schemas: carts
+    create-schemas: true
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    tags:
+      application: cart-service
