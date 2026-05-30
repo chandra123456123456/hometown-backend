@@ -9,6 +9,7 @@ import com.hometown.order.port.PricingPort;
 import com.hometown.order.port.ShippingPort;
 import com.hometown.order.repo.OrderItemRepository;
 import com.hometown.order.repo.OrderRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,6 +86,28 @@ public class OrderService {
         List<OrderItem> savedItems = orderItemRepository.saveAll(items);
 
         return toResponse(order, savedItems);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> listAll() {
+        return orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).stream()
+                .map(order -> toResponse(order, orderItemRepository.findByOrderId(order.getId())))
+                .toList();
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> ApiException.notFound("Order not found"));
+        OrderStatus newStatus;
+        try {
+            newStatus = OrderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw ApiException.badRequest("Invalid status: " + status);
+        }
+        order.setStatus(newStatus);
+        order = orderRepository.save(order);
+        return toResponse(order, orderItemRepository.findByOrderId(orderId));
     }
 
     @Transactional(readOnly = true)
