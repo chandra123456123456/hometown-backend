@@ -48,6 +48,8 @@ public class AggregateSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/catalog/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/images").hasRole("ADMIN")
                 .requestMatchers("/api/orders/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/custom-orders/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/custom-orders/**").hasRole("CUSTOMER")
                 .requestMatchers(HttpMethod.POST, "/api/orders/shipping-quote").permitAll()
                 .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
                 .requestMatchers(HttpMethod.POST, "/api/orders").hasRole("CUSTOMER")
