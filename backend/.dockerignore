@@ -1,4 +1,6 @@
-**/target/
-**/*.iml
+# Keep only the runnable exec jars in the build context (built on host).
+**/target/*
+!**/target/*-exec.jar
 .idea/
 .git/
+*.iml

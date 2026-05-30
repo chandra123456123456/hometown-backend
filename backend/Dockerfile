@@ -1,13 +1,9 @@
-# Single image containing every runnable service jar; each container picks one
-# via the SERVICE env var. Built once, reused by all backend compose services.
-FROM maven:3.9-eclipse-temurin-17 AS build
-WORKDIR /build
-COPY . .
-RUN mvn -q -DskipTests package
-
+# Lightweight runtime image: packages the jars already built on the host
+# (run `mvn -DskipTests package` first). Avoids a heavy in-container Maven build.
+# Each container selects its jar via the SERVICE env var.
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /build/*/target/*-exec.jar /app/
+COPY */target/*-exec.jar /app/
 RUN for f in /app/*-exec.jar; do mv "$f" "$(echo "$f" | sed 's/-0.0.1-SNAPSHOT-exec//')"; done
 ENV SERVICE=api-gateway
 ENTRYPOINT ["sh", "-c", "java -jar /app/${SERVICE}.jar"]
