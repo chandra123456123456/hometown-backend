@@ -1,0 +1,17 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: hometown-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    tags:
+      application: hometown-api
