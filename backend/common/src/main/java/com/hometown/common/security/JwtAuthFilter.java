@@ -33,6 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 var authority = new SimpleGrantedAuthority("ROLE_" + (role == null ? Roles.CUSTOMER : role));
                 var auth = new UsernamePasswordAuthenticationToken(
                         claims.getSubject(), null, List.of(authority));
+                auth.setDetails(claims.get("email", String.class));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception ignored) {
                 // invalid token -> remain unauthenticated

@@ -17,7 +17,9 @@ public record ProductResponse(
         boolean active,
         Long sellerId,
         Instant createdAt,
-        List<String> imageUrls
+        List<String> imageUrls,
+        Double avgRating,
+        Integer reviewCount
 ) {
     public static ProductResponse of(com.hometown.product.domain.Product p) {
         BigDecimal effective = p.getDiscountPercent() == 0
@@ -37,7 +39,9 @@ public record ProductResponse(
                 p.isActive(),
                 p.getSellerId(),
                 p.getCreatedAt(),
-                p.getImageUrls()
+                p.getImageUrls(),
+                null,
+                0
         );
     }
 }
