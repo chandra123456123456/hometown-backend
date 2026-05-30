@@ -4,6 +4,7 @@ import com.hometown.common.web.ApiException;
 import com.hometown.product.domain.Product;
 import com.hometown.product.dto.ProductRequest;
 import com.hometown.product.dto.ProductResponse;
+import com.hometown.product.image.ImageUrlSigner;
 import com.hometown.product.repo.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,15 +13,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository repo;
+    private final ImageUrlSigner signer;
 
-    public ProductService(ProductRepository repo) {
+    public ProductService(ProductRepository repo, ImageUrlSigner signer) {
         this.repo = repo;
+        this.signer = signer;
+    }
+
+    private ProductResponse toResponse(Product p) {
+        ProductResponse r = ProductResponse.of(p);
+        List<String> signed = r.imageUrls() == null ? List.of()
+                : r.imageUrls().stream().map(signer::sign).toList();
+        return new ProductResponse(r.id(), r.name(), r.description(), r.price(),
+                r.discountPercent(), r.effectivePrice(), r.categoryId(), r.stock(),
+                r.active(), r.sellerId(), r.createdAt(), signed);
     }
 
     public Page<ProductResponse> search(Long categoryId, String q, int page, int size) {
@@ -35,26 +48,26 @@ public class ProductService {
         } else {
             results = repo.findAll(pageable);
         }
-        return results.map(ProductResponse::of);
+        return results.map(this::toResponse);
     }
 
     public ProductResponse findById(Long id) {
         Product p = repo.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Product not found: " + id));
-        return ProductResponse.of(p);
+        return toResponse(p);
     }
 
     @Transactional
     public ProductResponse create(ProductRequest req) {
         Product p = applyRequest(new Product(), req);
-        return ProductResponse.of(repo.save(p));
+        return toResponse(repo.save(p));
     }
 
     @Transactional
     public ProductResponse update(Long id, ProductRequest req) {
         Product p = repo.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Product not found: " + id));
-        return ProductResponse.of(repo.save(applyRequest(p, req)));
+        return toResponse(repo.save(applyRequest(p, req)));
     }
 
     @Transactional
@@ -74,7 +87,11 @@ public class ProductService {
         p.setStock(req.stock());
         p.setActive(req.active());
         p.setSellerId(req.sellerId());
-        p.setImageUrls(req.imageUrls() != null ? new ArrayList<>(req.imageUrls()) : new ArrayList<>());
+        List<String> urls = new ArrayList<>();
+        if (req.imageUrls() != null) {
+            for (String u : req.imageUrls()) urls.add(signer.stripQuery(u));
+        }
+        p.setImageUrls(urls);
         return p;
     }
 }

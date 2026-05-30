@@ -8,6 +8,7 @@ public class ImageProperties {
     private String dir = "E:/HomeTown/.run/images";
     private String keyBase64 = "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=";
     private String watermarkText = "HomeTown";
+    private long urlTtlSeconds = 3600;
 
     public String getDir() { return dir; }
     public void setDir(String dir) { this.dir = dir; }
@@ -17,4 +18,7 @@ public class ImageProperties {
 
     public String getWatermarkText() { return watermarkText; }
     public void setWatermarkText(String watermarkText) { this.watermarkText = watermarkText; }
+
+    public long getUrlTtlSeconds() { return urlTtlSeconds; }
+    public void setUrlTtlSeconds(long urlTtlSeconds) { this.urlTtlSeconds = urlTtlSeconds; }
 }
