@@ -55,6 +55,7 @@ public class AggregateSecurityConfig {
                 .requestMatchers("/api/shipping/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/analytics/events").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/analytics/**").hasRole("ADMIN")
+                .requestMatchers("/api/audit/**").hasRole("DEVELOPER")
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )

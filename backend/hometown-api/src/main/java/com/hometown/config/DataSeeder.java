@@ -39,6 +39,8 @@ public class DataSeeder implements CommandLineRunner {
         users.save(user("HomeTown Admin", "admin@hometown.local", "admin123", "ADMIN"));
         users.save(user("Priya (Admin)", "priya.admin@hometown.local", "admin123", "ADMIN"));
         users.save(user("Store Manager", "manager@hometown.local", "manager123", "ADMIN"));
+        // Developer (full API audit visibility)
+        users.save(user("Dev Console", "dev@hometown.local", "dev123", "DEVELOPER"));
         // Customers
         users.save(user("Demo Customer", "customer@hometown.local", "customer123", "CUSTOMER"));
         users.save(user("Rahul Sharma", "rahul@example.com", "rahul123", "CUSTOMER"));
