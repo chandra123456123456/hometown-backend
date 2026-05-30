@@ -2,7 +2,7 @@ package com.hometown.config;
 
 import com.hometown.order.dto.ProductDto;
 import com.hometown.order.port.PricingPort;
-import com.hometown.product.dto.ProductResponse;
+import com.hometown.product.dto.ProductOrderInfo;
 import com.hometown.product.service.ProductService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,8 @@ public class LocalPricingAdapter implements PricingPort {
 
     @Override
     public ProductDto fetchProduct(Long id) {
-        ProductResponse p = productService.findById(id);
-        return new ProductDto(p.id(), p.price(), p.sellerId(), p.stock());
+        ProductOrderInfo p = productService.getOrderInfo(id);
+        return new ProductDto(p.id(), p.price(), p.sellerId(), p.stock(),
+                p.weightGrams(), p.lengthCm(), p.widthCm(), p.heightCm());
     }
 }

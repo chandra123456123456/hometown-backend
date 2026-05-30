@@ -5,6 +5,8 @@ import com.hometown.order.dto.ShippingEstimateDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Profile("microservices")
 public class FeignShippingAdapter implements ShippingPort {
@@ -16,7 +18,12 @@ public class FeignShippingAdapter implements ShippingPort {
     }
 
     @Override
-    public ShippingEstimateDto estimate(String pincode, int weight) {
-        return shippingClient.getEstimate(pincode, weight);
+    public ShippingEstimateDto estimate(String pincode, int weightGrams, int volumeCm3) {
+        return shippingClient.getEstimate(pincode, weightGrams, volumeCm3);
+    }
+
+    @Override
+    public List<ShippingEstimateDto> quotes(String pincode, int weightGrams, int volumeCm3) {
+        return shippingClient.getQuotes(new ShippingClient.QuoteBody(pincode, weightGrams, volumeCm3));
     }
 }

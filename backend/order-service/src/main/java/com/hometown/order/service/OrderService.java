@@ -35,6 +35,33 @@ public class OrderService {
         this.shippingPort = shippingPort;
     }
 
+    // Total parcel weight (g) and volume (cm3) from internal product dimensions — never exposed to the client.
+    private int[] parcelFor(List<OrderLineRequest> items) {
+        int weight = 0;
+        long volume = 0;
+        for (OrderLineRequest line : items) {
+            try {
+                ProductDto p = pricingPort.fetchProduct(line.productId());
+                int w = p.weightGrams() == null ? 500 : p.weightGrams();
+                int l = p.lengthCm() == null ? 10 : p.lengthCm();
+                int wd = p.widthCm() == null ? 10 : p.widthCm();
+                int h = p.heightCm() == null ? 10 : p.heightCm();
+                weight += w * line.quantity();
+                volume += (long) l * wd * h * line.quantity();
+            } catch (Exception ignored) {
+                weight += 500 * line.quantity();
+                volume += 1000L * line.quantity();
+            }
+        }
+        return new int[] { weight, (int) Math.min(volume, Integer.MAX_VALUE) };
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShippingEstimateDto> shippingQuote(List<OrderLineRequest> items, String pincode) {
+        int[] parcel = parcelFor(items);
+        return shippingPort.quotes(pincode, parcel[0], parcel[1]);
+    }
+
     public StockCheckResponse validateStock(List<OrderLineRequest> items) {
         List<StockIssue> issues = new ArrayList<>();
         for (OrderLineRequest line : items) {
@@ -84,10 +111,17 @@ public class OrderService {
         String partner = req.shippingPartner();
         int etaDays = 5;
         try {
-            ShippingEstimateDto estimate = shippingPort.estimate(req.destPincode(), 1);
-            shippingCost = estimate.charge();
-            partner = estimate.partner();
-            etaDays = estimate.etaDays();
+            int[] parcel = parcelFor(req.items());
+            List<ShippingEstimateDto> options = shippingPort.quotes(req.destPincode(), parcel[0], parcel[1]);
+            ShippingEstimateDto chosen = options.stream()
+                    .filter(o -> o.partner() != null && o.partner().equalsIgnoreCase(req.shippingPartner()))
+                    .findFirst()
+                    .orElse(options.isEmpty() ? null : options.get(0));
+            if (chosen != null) {
+                shippingCost = chosen.charge();
+                partner = chosen.partner();
+                etaDays = chosen.etaDays();
+            }
         } catch (Exception ignored) {
             // fall back to defaults
         }

@@ -15,5 +15,9 @@ public record ProductRequest(
         boolean active,
         Long sellerId,
         List<String> imageUrls,
-        boolean antique
+        boolean antique,
+        Integer weightGrams,
+        Integer lengthCm,
+        Integer widthCm,
+        Integer heightCm
 ) {}

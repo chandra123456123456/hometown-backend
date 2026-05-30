@@ -3,6 +3,8 @@ package com.hometown.order.web;
 import com.hometown.common.security.CurrentUser;
 import com.hometown.order.dto.CreateOrderRequest;
 import com.hometown.order.dto.OrderResponse;
+import com.hometown.order.dto.ShippingEstimateDto;
+import com.hometown.order.dto.ShippingQuoteRequest;
 import com.hometown.order.dto.StockCheckRequest;
 import com.hometown.order.dto.StockCheckResponse;
 import com.hometown.order.dto.UpdateOrderStatusRequest;
@@ -28,6 +30,12 @@ public class OrderController {
     @PostMapping("/validate-stock")
     public StockCheckResponse validateStock(@Valid @RequestBody StockCheckRequest req) {
         return orderService.validateStock(req.items());
+    }
+
+    // Public: computes shipping options from internal product weight/dimensions.
+    @PostMapping("/shipping-quote")
+    public List<ShippingEstimateDto> shippingQuote(@Valid @RequestBody ShippingQuoteRequest req) {
+        return orderService.shippingQuote(req.items(), req.pincode());
     }
 
     @PostMapping

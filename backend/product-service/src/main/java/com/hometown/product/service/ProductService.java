@@ -2,6 +2,7 @@ package com.hometown.product.service;
 
 import com.hometown.common.web.ApiException;
 import com.hometown.product.domain.Product;
+import com.hometown.product.dto.ProductOrderInfo;
 import com.hometown.product.dto.ProductRequest;
 import com.hometown.product.dto.ProductResponse;
 import com.hometown.product.image.ImageUrlSigner;
@@ -98,6 +99,13 @@ public class ProductService {
         repo.deleteById(id);
     }
 
+    public ProductOrderInfo getOrderInfo(Long id) {
+        Product p = repo.findById(id)
+                .orElseThrow(() -> ApiException.notFound("Product not found: " + id));
+        return new ProductOrderInfo(p.getId(), p.getPrice(), p.getSellerId(), p.getStock(),
+                p.getWeightGrams(), p.getLengthCm(), p.getWidthCm(), p.getHeightCm());
+    }
+
     private Product applyRequest(Product p, ProductRequest req) {
         p.setName(req.name());
         p.setDescription(req.description());
@@ -109,6 +117,11 @@ public class ProductService {
         p.setSellerId(req.sellerId());
         p.setAntique(req.antique());
         if (req.antique()) p.setStock(1);
+        // Only override when provided (entity defaults cover new products; edits keep existing).
+        if (req.weightGrams() != null) p.setWeightGrams(req.weightGrams());
+        if (req.lengthCm() != null) p.setLengthCm(req.lengthCm());
+        if (req.widthCm() != null) p.setWidthCm(req.widthCm());
+        if (req.heightCm() != null) p.setHeightCm(req.heightCm());
         List<String> urls = new ArrayList<>();
         if (req.imageUrls() != null) {
             for (String u : req.imageUrls()) urls.add(signer.stripQuery(u));

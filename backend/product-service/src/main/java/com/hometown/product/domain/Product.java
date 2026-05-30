@@ -39,6 +39,18 @@ public class Product {
     @Column(nullable = false, columnDefinition = "boolean not null default false")
     private boolean antique = false;
 
+    @Column(nullable = false, columnDefinition = "integer not null default 500")
+    private int weightGrams = 500;
+
+    @Column(nullable = false, columnDefinition = "integer not null default 10")
+    private int lengthCm = 10;
+
+    @Column(nullable = false, columnDefinition = "integer not null default 10")
+    private int widthCm = 10;
+
+    @Column(nullable = false, columnDefinition = "integer not null default 10")
+    private int heightCm = 10;
+
     private Long sellerId;
 
     @Column(nullable = false, updatable = false)
@@ -81,6 +93,18 @@ public class Product {
 
     public boolean isAntique() { return antique; }
     public void setAntique(boolean antique) { this.antique = antique; }
+
+    public int getWeightGrams() { return weightGrams; }
+    public void setWeightGrams(int weightGrams) { this.weightGrams = weightGrams; }
+
+    public int getLengthCm() { return lengthCm; }
+    public void setLengthCm(int lengthCm) { this.lengthCm = lengthCm; }
+
+    public int getWidthCm() { return widthCm; }
+    public void setWidthCm(int widthCm) { this.widthCm = widthCm; }
+
+    public int getHeightCm() { return heightCm; }
+    public void setHeightCm(int heightCm) { this.heightCm = heightCm; }
 
     public Long getSellerId() { return sellerId; }
     public void setSellerId(Long sellerId) { this.sellerId = sellerId; }

@@ -2,6 +2,7 @@ package com.hometown.shipping.web;
 
 import com.hometown.shipping.dto.QuoteRequest;
 import com.hometown.shipping.dto.ServiceabilityResponse;
+import com.hometown.shipping.provider.Parcel;
 import com.hometown.shipping.provider.ShippingOption;
 import com.hometown.shipping.service.ShippingService;
 import jakarta.validation.Valid;
@@ -29,14 +30,16 @@ public class ShippingController {
     @GetMapping("/estimate")
     public ResponseEntity<ShippingOption> estimate(
             @RequestParam String pincode,
-            @RequestParam(defaultValue = "500") int weight) {
-        ShippingOption option = shippingService.estimate(pincode, weight);
+            @RequestParam(defaultValue = "500") int weight,
+            @RequestParam(defaultValue = "1000") int volume) {
+        ShippingOption option = shippingService.estimate(pincode, new Parcel(weight, volume));
         return ResponseEntity.ok(option);
     }
 
     @PostMapping("/quotes")
     public ResponseEntity<List<ShippingOption>> quotes(@Valid @RequestBody QuoteRequest request) {
-        List<ShippingOption> options = shippingService.quotes(request.pincode(), request.weightGrams());
+        List<ShippingOption> options = shippingService.quotes(
+                request.pincode(), new Parcel(request.weightGrams(), request.volumeCm3()));
         return ResponseEntity.ok(options);
     }
 }

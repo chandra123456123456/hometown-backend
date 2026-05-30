@@ -21,8 +21,7 @@ public class ShippingService {
         return providers.stream().anyMatch(p -> p.isServiceable(pincode));
     }
 
-    public ShippingOption estimate(String pincode, int weightGrams) {
-        Parcel parcel = new Parcel(weightGrams);
+    public ShippingOption estimate(String pincode, Parcel parcel) {
         List<ShippingOption> options = buildOptions(pincode, parcel);
         return options.stream()
                 .filter(ShippingOption::serviceable)
@@ -30,8 +29,7 @@ public class ShippingService {
                 .orElseGet(() -> options.isEmpty() ? null : options.get(0));
     }
 
-    public List<ShippingOption> quotes(String pincode, int weightGrams) {
-        Parcel parcel = new Parcel(weightGrams);
+    public List<ShippingOption> quotes(String pincode, Parcel parcel) {
         return buildOptions(pincode, parcel);
     }
 
