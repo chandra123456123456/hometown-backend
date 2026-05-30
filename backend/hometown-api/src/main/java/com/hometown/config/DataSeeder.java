@@ -50,7 +50,6 @@ public class DataSeeder implements CommandLineRunner {
         Long textiles = categories.save(category("Textiles", "textiles")).getId();
         Long decor = categories.save(category("Home Decor", "home-decor")).getId();
 
-        products.save(product("Madhubani Hand-painted Canvas", "Traditional Madhubani folk art, hand-painted on cotton canvas.", "1499.00", 10, wallArt, 8, "p1.jpg"));
         products.save(product("Terracotta Vase Set", "Set of 3 hand-thrown terracotta vases with natural glaze.", "899.00", 0, pottery, 15, "p2.jpg"));
         products.save(product("Handloom Cotton Throw", "Handwoven cotton throw blanket with block-print border.", "1299.00", 15, textiles, 20, "p3.jpg"));
         products.save(product("Brass Diya Lamp", "Hand-cast brass oil lamp for festive home decor.", "649.00", 5, decor, 30, "p4.jpg"));
