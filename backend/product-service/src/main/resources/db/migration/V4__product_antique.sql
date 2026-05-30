@@ -1,0 +1,1 @@
+ALTER TABLE products.products ADD COLUMN IF NOT EXISTS antique BOOLEAN NOT NULL DEFAULT false;

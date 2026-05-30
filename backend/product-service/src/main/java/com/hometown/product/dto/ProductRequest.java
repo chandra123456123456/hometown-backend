@@ -14,5 +14,6 @@ public record ProductRequest(
         @Min(0) int stock,
         boolean active,
         Long sellerId,
-        List<String> imageUrls
+        List<String> imageUrls,
+        boolean antique
 ) {}

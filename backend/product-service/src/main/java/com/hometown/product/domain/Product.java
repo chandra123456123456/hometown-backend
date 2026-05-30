@@ -36,6 +36,9 @@ public class Product {
     @Column(nullable = false)
     private boolean active = true;
 
+    @Column(nullable = false, columnDefinition = "boolean not null default false")
+    private boolean antique = false;
+
     private Long sellerId;
 
     @Column(nullable = false, updatable = false)
@@ -75,6 +78,9 @@ public class Product {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public boolean isAntique() { return antique; }
+    public void setAntique(boolean antique) { this.antique = antique; }
 
     public Long getSellerId() { return sellerId; }
     public void setSellerId(Long sellerId) { this.sellerId = sellerId; }

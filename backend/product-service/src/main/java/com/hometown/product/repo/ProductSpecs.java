@@ -33,4 +33,9 @@ public final class ProductSpecs {
     public static Specification<Product> inStock() {
         return (root, query, cb) -> cb.greaterThan(root.get("stock"), 0);
     }
+
+    public static Specification<Product> antiqueIs(Boolean antique) {
+        if (antique == null) return null;
+        return (root, query, cb) -> cb.equal(root.get("antique"), antique);
+    }
 }

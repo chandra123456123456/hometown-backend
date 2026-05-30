@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,8 +35,29 @@ public class OrderService {
         this.shippingPort = shippingPort;
     }
 
+    public StockCheckResponse validateStock(List<OrderLineRequest> items) {
+        List<StockIssue> issues = new ArrayList<>();
+        for (OrderLineRequest line : items) {
+            try {
+                ProductDto product = pricingPort.fetchProduct(line.productId());
+                int available = product.stock() == null ? 0 : product.stock();
+                if (line.quantity() > available) {
+                    issues.add(new StockIssue(line.productId(), line.quantity(), available));
+                }
+            } catch (Exception ignored) {
+                // skip item on fetch failure
+            }
+        }
+        return new StockCheckResponse(issues.isEmpty(), issues);
+    }
+
     @Transactional
     public OrderResponse create(Long userId, CreateOrderRequest req) {
+        StockCheckResponse stockCheck = validateStock(req.items());
+        if (!stockCheck.ok()) {
+            throw ApiException.conflict("Insufficient stock for one or more items");
+        }
+
         List<OrderItem> items = req.items().stream().map(line -> {
             BigDecimal price = BigDecimal.ZERO;
             Long sellerId = null;

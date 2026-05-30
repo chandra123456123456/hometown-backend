@@ -3,6 +3,8 @@ package com.hometown.order.web;
 import com.hometown.common.security.CurrentUser;
 import com.hometown.order.dto.CreateOrderRequest;
 import com.hometown.order.dto.OrderResponse;
+import com.hometown.order.dto.StockCheckRequest;
+import com.hometown.order.dto.StockCheckResponse;
 import com.hometown.order.dto.UpdateOrderStatusRequest;
 import com.hometown.order.service.OrderService;
 import jakarta.validation.Valid;
@@ -21,6 +23,11 @@ public class OrderController {
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @PostMapping("/validate-stock")
+    public StockCheckResponse validateStock(@Valid @RequestBody StockCheckRequest req) {
+        return orderService.validateStock(req.items());
     }
 
     @PostMapping

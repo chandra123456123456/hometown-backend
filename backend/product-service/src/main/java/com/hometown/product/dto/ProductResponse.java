@@ -19,7 +19,8 @@ public record ProductResponse(
         Instant createdAt,
         List<String> imageUrls,
         Double avgRating,
-        Integer reviewCount
+        Integer reviewCount,
+        boolean antique
 ) {
     public static ProductResponse of(com.hometown.product.domain.Product p) {
         BigDecimal effective = p.getDiscountPercent() == 0
@@ -41,7 +42,8 @@ public record ProductResponse(
                 p.getCreatedAt(),
                 p.getImageUrls(),
                 null,
-                0
+                0,
+                p.isAntique()
         );
     }
 }

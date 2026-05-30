@@ -44,16 +44,17 @@ public class ProductService {
         int count = (int) reviewRepo.countByProductId(p.getId());
         return new ProductResponse(r.id(), r.name(), r.description(), r.price(),
                 r.discountPercent(), r.effectivePrice(), r.categoryId(), r.stock(),
-                r.active(), r.sellerId(), r.createdAt(), signed, rounded, count);
+                r.active(), r.sellerId(), r.createdAt(), signed, rounded, count, r.antique());
     }
 
     public Page<ProductResponse> search(Long categoryId, String q, BigDecimal minPrice,
-            BigDecimal maxPrice, Boolean inStock, String sort, int page, int size) {
+            BigDecimal maxPrice, Boolean inStock, Boolean antique, String sort, int page, int size) {
         Specification<Product> spec = Specification.where(ProductSpecs.categoryIs(categoryId))
                 .and(ProductSpecs.nameContains(q))
                 .and(ProductSpecs.priceGte(minPrice))
                 .and(ProductSpecs.priceLte(maxPrice))
-                .and(Boolean.TRUE.equals(inStock) ? ProductSpecs.inStock() : null);
+                .and(Boolean.TRUE.equals(inStock) ? ProductSpecs.inStock() : null)
+                .and(ProductSpecs.antiqueIs(antique));
 
         Sort sortObj;
         if ("price_asc".equals(sort)) {
@@ -106,6 +107,8 @@ public class ProductService {
         p.setStock(req.stock());
         p.setActive(req.active());
         p.setSellerId(req.sellerId());
+        p.setAntique(req.antique());
+        if (req.antique()) p.setStock(1);
         List<String> urls = new ArrayList<>();
         if (req.imageUrls() != null) {
             for (String u : req.imageUrls()) urls.add(signer.stripQuery(u));

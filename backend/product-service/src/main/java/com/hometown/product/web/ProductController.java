@@ -29,10 +29,11 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) Boolean inStock,
+            @RequestParam(required = false) Boolean antique,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return service.search(categoryId, q, minPrice, maxPrice, inStock, sort, page, size);
+        return service.search(categoryId, q, minPrice, maxPrice, inStock, antique, sort, page, size);
     }
 
     @GetMapping("/{id}")
