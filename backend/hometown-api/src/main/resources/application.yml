@@ -6,6 +6,10 @@ spring:
     name: hometown-api
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+  servlet:
+    multipart:
+      max-file-size: 900MB
+      max-request-size: 950MB
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hometown}
     username: ${DB_USER:hometown}
